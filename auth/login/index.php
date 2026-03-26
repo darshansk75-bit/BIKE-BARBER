@@ -1,4 +1,5 @@
 <?php
+//Hi Hello
 /**
  * Unified Auth Controller (Login & Register)
  * PATH: /auth/login/index.php
@@ -22,7 +23,7 @@ $phone_val = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
-    
+
     if ($action === 'login') {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -31,7 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($email) || empty($password)) {
             $error = 'Please fill in all fields.';
-        } else {
+        }
+        else {
             $login_success = false;
             $role = '';
             $user = null;
@@ -48,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (password_verify($password, $user['password'])) {
                         $login_success = true;
                         $role = 'admin';
-                    } 
+                    }
                     // Fallback: Check plain-text and auto-migrate if match
                     elseif ($password === $user['password']) {
                         $login_success = true;
@@ -97,40 +99,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $error = 'Invalid email or password.';
         }
-    } 
+    }
     elseif ($action === 'register') {
-        $name     = trim($_POST['name'] ?? '');
-        $email    = trim($_POST['email'] ?? '');
-        $phone    = trim($_POST['phone'] ?? '');
+        $name = trim($_POST['name'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
         $password = $_POST['password'] ?? '';
-        $confirm  = $_POST['confirm_password'] ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
         $mode = 'register';
-        
-        $name_val  = htmlspecialchars($name);
+
+        $name_val = htmlspecialchars($name);
         $email_val = htmlspecialchars($email);
         $phone_val = htmlspecialchars($phone);
 
         $errors = [];
-        if (empty($name) || strlen($name) < 2)                $errors[] = 'Full name required.';
-        if (empty($email))                                    $errors[] = 'Email required.';
-        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL))   $errors[] = 'Invalid email.';
-        
+        if (empty($name) || strlen($name) < 2)
+            $errors[] = 'Full name required.';
+        if (empty($email))
+            $errors[] = 'Email required.';
+        elseif (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            $errors[] = 'Invalid email.';
+
         if (empty($phone)) {
             $errors[] = 'Phone number required.';
-        } elseif (!preg_match('/^[6-9]\d{9}$/', $phone)) {
+        }
+        elseif (!preg_match('/^[6-9]\d{9}$/', $phone)) {
             $errors[] = 'Invalid phone. Please enter exactly 10 digits starting with 6-9.';
         }
 
-        if (empty($password))                                 $errors[] = 'Password required.';
-        elseif (strlen($password) < 8)                        $errors[] = 'Password min 8 chars.';
-        if ($password !== $confirm)                           $errors[] = 'Passwords do not match.';
+        if (empty($password))
+            $errors[] = 'Password required.';
+        elseif (strlen($password) < 8)
+            $errors[] = 'Password min 8 chars.';
+        if ($password !== $confirm)
+            $errors[] = 'Passwords do not match.';
 
         if (empty($errors)) {
             $stmt = mysqli_prepare($conn, "SELECT customer_id FROM customers WHERE email = ? OR phone = ?");
             mysqli_stmt_bind_param($stmt, "ss", $email, $phone);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_store_result($stmt);
-            if (mysqli_stmt_num_rows($stmt) > 0) $errors[] = 'Email or phone already exists.';
+            if (mysqli_stmt_num_rows($stmt) > 0)
+                $errors[] = 'Email or phone already exists.';
             mysqli_stmt_close($stmt);
         }
 
@@ -141,11 +151,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (mysqli_stmt_execute($stmt)) {
                 $success = 'Account created! Now login.';
                 $mode = 'login'; // Switch back to login
-            } else {
+            }
+            else {
                 $error = 'Registration failed.';
             }
             mysqli_stmt_close($stmt);
-        } else {
+        }
+        else {
             $error = implode(' ', $errors);
         }
     }
@@ -183,14 +195,16 @@ require_once __DIR__ . '/../../includes/header.php';
                     <i class="bi bi-exclamation-circle mr-2"></i>
                     <span><?php echo htmlspecialchars($error); ?></span>
                 </div>
-            <?php endif; ?>
+            <?php
+endif; ?>
 
             <?php if ($success): ?>
                 <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg mb-6 text-sm shadow-sm flex items-center">
                     <i class="bi bi-check-circle mr-2"></i>
                     <span><?php echo htmlspecialchars($success); ?></span>
                 </div>
-            <?php endif; ?>
+            <?php
+endif; ?>
 
             <form method="POST" novalidate class="space-y-4">
                 <input type="hidden" name="action" value="login">
@@ -241,7 +255,8 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4 text-[11px] shadow-sm">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
-            <?php endif; ?>
+            <?php
+endif; ?>
 
             <form method="POST" novalidate class="space-y-3">
                 <input type="hidden" name="action" value="register">
