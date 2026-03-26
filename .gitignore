@@ -1,0 +1,28 @@
+# Configuration files
+config/constants.php
+config/db.php
+
+# Composer dependencies
+vendor/
+composer.lock
+
+# Uploads and temporary files
+uploads/
+assets/uploads/
+*.log
+
+# Windows-specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE-specific files
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Other
+.DS_Store
